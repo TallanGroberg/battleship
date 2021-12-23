@@ -13,11 +13,11 @@ function App() {
     <Container className="board">
       <h1>Battle Ship</h1>
       <div className={"column-label"}>
-      { column.map( i => <div>{i}</div> )
+      { column.map( i => <div key= {i} className={"colunm"}>{i}</div> )
         }
       </div>
       <div className={"row-label"}>
-        {row.map(i => <div className={i}>{i}</div>)}
+        {row.map(i => <div key={i} className={'row'}>{i}</div>)}
       </div>
 
         <Board />
@@ -27,13 +27,16 @@ function App() {
 
 const Container = styled.div`
 margin: auto;
-height: 50vh;
-width: 50vw;
+height: 100vh;
+width: 55vw;
 background-color: green;
 padding: 5px;
 position: relative;
+overflow: none;
 
-.column-label {
+ > .column-label {
+   max-width: 50vw;
+  
     text-align: center;
     padding-left: 30px;
     display: grid;
@@ -41,9 +44,12 @@ position: relative;
     grid-template-rows: 1fr;
     grid-column-gap: 0px;
     grid-row-gap: 0px;
+
 }
 
-.row-label {
+> .row-label {
+  width: 4vw;
+  height: 4vw;
   position: absolute;
   left: auto;
     display: grid;
@@ -53,14 +59,23 @@ position: relative;
     grid-row-gap: 2px;
 }
 
+.row {
+  width: 4vw;
+  height: 4vw;
+}
+
 
 
 .parent {
-  > div {
-    background-color: #ADD8E6;
-    text-align: center;
+  
     /* border: 1px solid #4e1f9d; */
-  }
+    > .ocean {
+      background-color: #ADD8E6;
+      text-align: center;
+      width: 4vw;
+      height: 4vw;
+    }
+
   padding-left: 30px;
   display: grid;
   grid-template-columns: repeat(10, 1fr);
@@ -68,6 +83,7 @@ position: relative;
   grid-column-gap: 2px;
   grid-row-gap: 2px;
   }
+
 
   
 `;

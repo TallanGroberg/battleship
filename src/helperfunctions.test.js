@@ -2,6 +2,11 @@
 
 const random = require("./helperfunctions").random;
 const placeShip = require("./helperfunctions").placeShip;
+const inBounds = require("./helperfunctions").inBounds;
+const makeCol = require("./helperfunctions").makeCol;
+const makeRow = require("./helperfunctions").makeRow;
+const checkForShips = require("./helperfunctions").checkForShips;
+const playerFactory = require("./helperfunctions").playerFactory;
 
 
 test('random numbers to be less than 10', () => {
@@ -12,8 +17,86 @@ test('random numbers to be less than 10', () => {
 });
 
 test('x and y coords less than ten', () => {
-  var ship = placeShip(random(0,10), random(0,10))
-  
-  expect(ship.x < 10)
-  expect(ship.y < 10)
+
+    var coord = placeShip(random(0,10), random(0,10))
+    expect(coord.x < 10)
+    expect(coord.y < 10)
+
 });
+
+test('expect x and y to be between 0 and 9 inclusive', () => {
+  expect(inBounds({x: 10, y: 1})).toBe(false);
+  expect(inBounds(placeShip(9, -1))).toBe(false);
+  expect(inBounds(placeShip(9, 10))).toBe(false);
+  expect(inBounds(placeShip(10, 0))).toBe(false);
+  expect(inBounds(placeShip(-1, 0))).toBe(false);
+
+  expect(inBounds(placeShip(9, 0))).toBe(true);
+  expect(inBounds(placeShip(5, 5))).toBe(true);
+})
+
+
+test('makeCol will not let a ships coords go out of bounds', () => {
+  let ship = {horiz: 0, type: 5, coords: [{x:8, y:9}]}
+  ship = makeCol(ship, {ships: []});
+  expect(ship.length).toBe(5)
+  
+  ship = {horiz: 0, type: 5, coords: [{x:8, y:0}]}
+  ship = makeCol(ship, {ships: []});
+  expect(ship.length).toBe(5)
+
+  ship = {horiz: 0, type: 5, coords: [{x:8, y:3}]}
+  ship = makeCol(ship, {ships: []});
+  expect(ship.length).toBe(5)
+
+  ship = {horiz: 0, type: 5, coords: [{x:0, y:6}]}
+  ship = makeCol(ship, {ships: []});
+  expect(ship.length).toBe(5)
+
+})
+test('makeRow will not let a ships coords go out of bounds', () => {
+
+  let ship = {horiz: 0, type: 5, coords: [{x:9, y:8}]}
+  ship = makeRow(ship,{ships: []});
+  expect(ship.length).toBe(5)
+  
+  ship = {horiz: 0, type: 5, coords: [{x:0, y:8}]}
+  ship = makeRow(ship,{ships: []});
+  expect(ship.length).toBe(5)
+
+  ship = {horiz: 0, type: 5, coords: [{x:3, y:8}]}
+  ship = makeRow(ship,{ships: []});
+  expect(ship.length).toBe(5)
+
+  ship = {horiz: 0, type: 5, coords: [{x:6, y:0}]}
+  ship = makeRow(ship,{ships: []});
+  expect(ship.length).toBe(5)
+})
+
+test('checkForShips should not let a ship get built where another ship exists', () => {
+  var player = {ships: [ // ships
+                          [{x: 1, y: 2}, {x:2, y:2} ], 
+                          [{x: 4, y: 1}, {x:4, y:2}, {x: 4, y:3}]
+                        ]
+              }
+      expect(checkForShips(player, {x: 2,y:0}) === true)
+      expect(checkForShips(player, {x: 2,y:1}) === true)
+      expect(checkForShips(player, {x: 2,y:2}) === false)
+      expect(checkForShips(player, {x: 1,y:2}) === false)
+      
+      expect(checkForShips(player, {x: 3,y:1}) === true)
+      expect(checkForShips(player, {x: 4,y:1}) === false)
+
+})
+
+test('PlayerFactory should create a new player with everything they would need to start a game.', () => {
+  var player = playerFactory()
+  for(var i = 0; i < player.ships.length; i++) {
+    expect(typeof(player.ships[i].x) === typeof(Number) )
+    expect(typeof(player.ships[i].y) === typeof(Number) )
+  }
+})
+
+
+
+
