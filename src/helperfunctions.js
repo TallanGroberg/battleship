@@ -1,5 +1,4 @@
 
-// takes a row and column for a 2D array and gives the value as if it was 1D
 
 /* 
  let ship = {
@@ -35,11 +34,11 @@ function placeShip(row, col) {
 //REQUIRES row and col are less than ten. 
 function matrixAt(row, col) {
     const width = 10;
-    const i = (width * col) + row;
+    const i = (width * row) + col;
     return i;
 }
 
-function random(min, max) {
+ function random(min, max) {
     const num = Math.floor(Math.random() * (max - min + 1)) + min;
 	return num;
 }
@@ -53,19 +52,21 @@ function random(min, max) {
 
     for (let i = 2; i < 6; i++) {
         if(i === 3) {
-            player.ships.push(makeShip({}, 3, player)) 
-            player.ships.push(makeShip({}, 3, player)) 
-        } else if(i >= 2) {
-            player.ships.push(makeShip({}, i, player)) 
+            player.ships.unshift(makeShip({}, 3, player))
+            player.ships.unshift(makeShip({}, 3, player))
+        } else {
+            player.ships.unshift(makeShip({}, i, player))
         }
         
     }
+
     return player
 }
 
 
 
-function makeBoard(player) {
+export function makeBoard() {
+    var player = playerFactory()
 
 let board = Array(100).fill(" ")
     
@@ -85,13 +86,9 @@ let board = Array(100).fill(" ")
 }
 
 function printBoard(board) {
-    // for (let i = 0; i < 10; i++) {
-    //     for (let j = 0; j < 10; j++) {
-    //         console.log(board[matrixAt(i,j)])
-            
-    //     }
+
         console.log(board)
-    // }
+   
 }
 
 
@@ -111,72 +108,99 @@ function printBoard(board) {
         // horiz or vert is randomly assigned.
 
 function makeShip(ship, size, player) {
-    const start = placeShip(random(0,9), random(0,9));
-    ship['horiz'] = random(0,1)
+    
+    ship['direction'] = assignDirection(random(0,1))
     ship["type"] = size;
-    ship["coords"] = [start]
+    ship["coords"] = [placeShip(random(0,9), random(0,9))]
     ship["hits"] = 0
-    
- 
-        // if 0 ship is horizontal else vertical
+    let direction = checkForShips(player, ship.coords[0], size, ship.direction)
 
-        if(ship.horiz === 0) {
-            ship.coords = makeCol(ship, player)
-        } else {
-            ship.coords = makeRow(ship, player)
-        }
-    
+    while(direction === false) {
+        ship["coords"] = [placeShip(random(0,9), random(0,9))]
+        direction = checkForShips(player, ship.coords[0], size, ship.direction)
+    }
+
+    build(ship, ship.coords[0], size, direction)
+
+
+
     return ship
 }
 
-// ship has to have a type. 
-// returns an array of coords that make up the ship. 
+function build(ship, start, size, direction) {
 
-function makeCol(ship, player) {
-    let start = ship.coords[0]
-    const size = ship.type
-    let direction = checkForShips(player,start, ship.type, false)
-    if(typeof(direction) !== "string") {
-        makeShip({}, ship.type, player)
+    if(direction === "left") {
+        ship.coords = left(ship, start, size)
+    }
+    if(direction === "right") {
+        ship.coords = right(ship,start, size)
     }
 
-
-    if(direction == "up") {
-        for (let i = start.y - size + 1; i < start.y; i++) {
-            ship.coords.push( {x: start.x, y: i}) 
-        }
-    } else {
-        for (let i = start.y; i < start.y + size - 1; i++) {
-            ship.coords.push({x: start.x, y: i}) 
-        }
+    if(direction === "up") {
+        ship.coords = up(ship, start, size)
     }
 
-    return ship.coords
+    if(direction === "down") {
+        ship.coords = down(ship,start,size)
+    }
+
+return ship
 }
 
-// ship has to have a type 
-function makeRow(ship, player) {
-    let start = ship.coords[0]
-    let size = ship.type
-    let direction = checkForShips(player,start, ship.type, true)
-    if(typeof(direction) !== "string") {
-        makeShip({}, ship.type, player)
-    }
-    
-    if(direction == "left") {
-        for (let i = start.x - size + 1; i < start.x; i++) {
-            ship.coords.push({x: i, y: start.y})
+
+    function left(ship, start, size) {
+        for (let i = start.x - size + 1 ; i < start.x; i++) {
+            var coord = {x: i, y:start.y }
+            ship.coords.unshift(coord)
         }
-    } else {
-        for (let i = start.x; i < start.x + size - 1; i++) {
-            ship.coords.push( {x: i, y: start.y })
+        ship.coords.sort((a, b) => (a.x > b.x ? 1 : -1));
+        return ship.coords
+    }
+    function right(ship, start, size) {
+            for (let i = start.x + 1; i <  start.x + size; i++) {
+                var coord = {x: i, y:start.y }
+                ship.coords.push(coord)
+            }
+            ship.coords.sort((a, b) => (a.x > b.x ? 1 : -1));
+            return ship.coords
+    }
+    function up(ship, start, size) {
+
+        for (let i = start.y - size + 1; i <  start.y; i++) {
+            var coord = {x: start.x, y: i }
+            ship.coords.push(coord)
+            
         }
+        ship.coords.sort((a, b) => (a.y > b.y ? 1 : -1));
+        return ship.coords
+
+    }
+    function down(ship, start, size) {
+
+        for (let i = start.y + 1; i <  start.y + size; i++) {
+            var coord = {x: start.x, y: i }
+            ship.coords.push(coord)
+            }
+        
+
+        ship.coords.sort((a, b) => (a.y > b.y ? 1 : -1));
+        return ship.coords
     }
 
 
 
-    return ship.coords
+
+function assignDirection(num) {
+    if(num === 0) {
+        return "horiz"
+    }
+    if(num === 1) {
+        return "vert"
+    }
+    return "NOT ASSIGNED"
 }
+
+
 
 
 
@@ -186,17 +210,18 @@ function makeRow(ship, player) {
         // returns which direction to build if you can build there
         // does this for the whole interval from where a ship starts to ends and ever value in between.
 
-function checkForShips(player, start, size, isHoriz) {
+function checkForShips(player, start, size, direction) {
     var canBuild = false;
     // case 0
         // ship is at the start pos. 
         if(shipIsThere(player.ships, start)) return false;
+
     // case 1 horizontal
         // sub case check left. 
     // case 2 horizontal
         // subcase check right
             // if one is true return true
-    if(isHoriz) {
+    if(direction === "horiz") {
         var left = checkLeft(player, start, size)
         var right = checkright(player, start, size);
         if(left) return "left"
@@ -209,7 +234,7 @@ function checkForShips(player, start, size, isHoriz) {
     // case 4 !horiz
         // subcase check down. 
             // if one is true return true
-    if(!isHoriz) {
+    if(direction === "vert") {
         var up = checkUp(player, start, size);
         var down = checkDown(player, start, size) 
         if(up) return "up"
@@ -221,38 +246,50 @@ function checkForShips(player, start, size, isHoriz) {
 }
 
 function checkLeft(player, start, size) {
-    for (let i = start.x - size + 1; i < start.x; i++) {
-        if(shipIsThere(player.ships, {x: i, y: start.y }) || !inB(i)) {
-            return false;
+
+    for (let i = start.x - size + 1 ; i < start.x; i++) {
+        var coord = {x: i, y:start.y }
+        if(shipIsThere(player.ships, coord) || !inBounds(coord) ) {
+            // cant build here
+            return false
         }
+        
     }
+  
     return true;
 }
 function checkright(player, start, size) {
-    for (let i = start.x; i < start.x + size; i++) {
-        if(shipIsThere(player.ships, {x: i, y: start.y }) || !inB(i)) {
+    for (let i = start.x; i <  start.x + size; i++) {
+        var coord = {x: i, y:start.y }
+        if(shipIsThere(player.ships, coord) || !inBounds(coord) ) {
+            // cant build here
             return false
         }
+        
     }
+    
     return true
 
 }
 function checkUp(player, start, size) {
-        for (let i = start.y - size + 1; i < start.y; i++) {
-            var colision = shipIsThere(player.ships, {x: start.x, y: i})
-            var inbounds = inB(i)
-            if(colision || !inbounds) {
-                return false
-            }
+    for (let i = start.y - size + 1; i <  start.y; i++) {
+        var coord = {x: start.x, y: i }
+        if(shipIsThere(player.ships, coord) || !inBounds(coord) ) {
+            // cant build here
+            return false
         }
+        
+    }
     return true
 }
 function checkDown(player, start, size) {
-    for (let i = start.y; i < start.y + size; i++) {
-        var colision = shipIsThere(player.ships, {x: start.x, y: i})
-        if(colision || !inB(i)) {
+    for (let i = start.y; i <  start.y + size; i++) {
+        var coord = {x: start.x, y: i }
+        if(shipIsThere(player.ships, coord) || !inBounds(coord) ) {
+            // cant build here
             return false
         }
+        
     }
     return true;
 }
@@ -261,8 +298,8 @@ function checkDown(player, start, size) {
 
 
 // if a coord is < 0 or coord > 9 returns false else true
-function inBounds(ship) {
-    if(inB(ship.x) && inB(ship.y))
+function inBounds(coord) {
+    if(inB(coord.x) && inB(coord.y))
     return true;
         else
     return false;
@@ -270,7 +307,7 @@ function inBounds(ship) {
 
 function inB(num) {
     if(num >= 0 && num <= 9) 
-        return true
+        return true;
     else 
         return false;
 }
@@ -301,16 +338,18 @@ function shipIsThere(fleet, coord) {
     if(ship.type === 2) return "D"
 }
 
-module.exports = {  
-                random, 
-                placeShip,
-                inBounds, 
-                makeShip,
-                shipIsThere,
-                makeCol,
-                makeRow,
-                checkForShips,
-                playerFactory,
-                makeBoard, 
-                printBoard,
-                };
+// module.exports = {  
+//                 random, 
+//                 matrixAt,
+//                 assignDirection,
+//                 build,
+//                 placeShip,
+//                 inBounds, 
+//                 makeShip,
+//                 shipIsThere,
+//                 checkForShips,
+//                 playerFactory,
+//                 makeBoard, 
+//                 printBoard,
+//                 };
+
