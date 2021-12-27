@@ -5,15 +5,7 @@ export const Board = () => {
     const [player, setPlayer] = useState(playerFactory())
     
     var count = -1;
-    var board = Array(100).fill().map( a => "_");
-    
-    player.ships.map(ship => {
-        let type = whatType(ship);
-        
-        return ship.coords.map( coord => {
-            board[matrixAt(coord.x, coord.y)] = type
-        })
-    })
+
     count = 0;
 
 
