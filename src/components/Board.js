@@ -1,20 +1,23 @@
 import {useState} from "react";
-import { makeBoard } from "../helperfunctions";
+import { makeBoard, matrixAt, random } from "../helperfunctions";
+import { Coordinate } from "./Coordinate";
+export const Board = ({board,
+    setBoard,
+    opponent,
+    setOpponent,
+    player, setPlayer
+            }) => {
 
-export const Board = () => {
-    const [board, setBoard] = useState(makeBoard())
-    const [opponent, setOpponent] = useState(makeBoard())
-
-    
-    
     return (
         <div className={"parent"}>
        {board.map( ( square, i) => {
-           return   <div onClick={() => }
-                        key={i} 
-                        className={"ocean"}>
-                            {square}
-                    </div> 
+           return   <Coordinate 
+                        coordinate={i}
+                        opponent={opponent[i]}
+                        square={square}
+                        setPlayer={setPlayer}
+                        player={player}
+                    />
        })}
 
 

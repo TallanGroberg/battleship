@@ -32,18 +32,18 @@ function placeShip(row, col) {
 }
 
 //REQUIRES row and col are less than ten. 
-function matrixAt(row, col) {
+export function matrixAt(row, col) {
     const width = 10;
     const i = (width * row) + col;
     return i;
 }
 
- function random(min, max) {
+ export function random(min, max) {
     const num = Math.floor(Math.random() * (max - min + 1)) + min;
 	return num;
 }
 
-  function playerFactory() {
+  export function playerFactory() {
     var player = {}
     player['ships'] = []
     player["tries"] = []
@@ -65,8 +65,8 @@ function matrixAt(row, col) {
 
 
 
-export function makeBoard() {
-    var player = playerFactory()
+export function makeBoard(player) {
+    
 
 let board = Array(100).fill(" ")
     
