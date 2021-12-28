@@ -25,6 +25,7 @@
 }
 */
 
+
 // returns the starting position of a ship
 function placeShip(row, col) {
 
@@ -36,6 +37,10 @@ export function matrixAt(row, col) {
     const width = 10;
     const i = (width * row) + col;
     return i;
+}
+
+export function fromMatrix(coordinate) {
+    return {x: ((coordinate) - coordinate % 10) / 10, y: coordinate % 10}
 }
 
  export function random(min, max) {
@@ -315,7 +320,7 @@ function inB(num) {
 
 
 // checks to see if any other ship has same coords
-function shipIsThere(fleet, coord) {
+export function shipIsThere(fleet, coord) {
     for (let i = 0; i < fleet.length; i++){
         for (let j = 0; j < fleet[i].coords.length; j++) {
             var fleetCoord = JSON.stringify(fleet[i].coords[j])
@@ -336,6 +341,18 @@ function shipIsThere(fleet, coord) {
     if(ship.type === 4) return "Ba"
     if(ship.type === 3) return "Cru"
     if(ship.type === 2) return "D"
+}
+
+export function winner(player, opponent) {
+ 
+
+    if(player.shipsLeft === 0) {
+        return "opponent wins"
+    } 
+
+    if(opponent.shipsLeft === 0) {
+        return "You win!"
+    }
 }
 
 // module.exports = {  
