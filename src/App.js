@@ -1,20 +1,27 @@
 import logo from './logo.svg';
 import { useState } from 'react';
 import styled from "styled-components"
-import {Board } from './components/Board'
+import { withPlayer } from './Providers/PlayerProvider';
+import Board  from './components/Board'
+import Ships from './components/Ships'
 import {GameStats} from './components/GameStats'
 import { makeBoard, playerFactory, winner } from "./helperfunctions";
 
-function App() {
-  const [player, setPlayer] = useState(playerFactory())
-  const [opponent, setOpponent] = useState(playerFactory())
-  const [board, setBoard] = useState(makeBoard(player))
-  const [oppBoard, setOppBoard] = useState(makeBoard(opponent))
-  var divs = [];
-
-  for (var i = 1; i <= board.length; i++) divs.push('opponent-clear');
-  
-  const [oppDivs, setOppdivs] = useState(divs)
+function App({
+  player,
+  opponent,
+  carrier,
+  board,
+  oppBoard,
+  oppDivs,
+  setPlayer,
+  setOpponent,
+  setBoard,
+  setOppBoard,
+  setOppdivs,
+}) {
+ 
+ console.log("Carrier", carrier.coords)
 
   var col = 0;
   var row = ["A", "B","C","D","E","F"," G", "H", "I", "J"]
@@ -24,7 +31,7 @@ function App() {
   
 
   return (<>
-    <Container>
+    <Container  >
       <div className={"game"}>
 
         <h1>Battle Ship</h1>
@@ -40,19 +47,8 @@ function App() {
           {row.map(i => <div key={i} className={'row'}>{i}</div>)}
         </div>
 
-          <Board
-                board={board}
-                setBoard={setBoard}
-                oppBoard={oppBoard}
-                setOpponent={setOpponent}
-                opponent={opponent}
-                setOppBoard={setOppBoard}
-                player={player}
-                setPlayer={setPlayer}
-                oppDivs={oppDivs} 
-                setOppdivs={setOppdivs}
-     
-                />
+          <Board />
+          <Ships />
 </div>
 
 <GameStats player={"player"}
@@ -69,7 +65,7 @@ function App() {
   </>);
 }
 
-const Container = styled.div`
+const Container = withPlayer(styled.div`
 
   .game {
       z-index: 1;
@@ -121,9 +117,10 @@ const Container = styled.div`
           text-align: center;
           width: 4vw;
           height: 4vw;
+          cursor: pointer
         }
 
-      padding-left: 30px;
+      padding-left: 30px ;
       display: grid;
       grid-template-columns: repeat(10, 1fr);
       grid-template-rows: repeat(10, 1fr);
@@ -139,9 +136,16 @@ const Container = styled.div`
          border-radius: 50%;
         background-color: lightblue;
       }
-    }
 
+
+      
+    }
+    
+    
   }
+  .hide {
+  opacity: 100% !important;
+}
 
 .player {
     text-align: left;
@@ -174,28 +178,27 @@ const Container = styled.div`
   grid-row-gap: 2px;
 }
 .moves-list-opponent {
-  overflow:auto
-  display: grid;
-
-  /* height: 100vh; */
-  grid-template-columns: repeat(1, 1fr);
+  height:50vh;
+  overflow-y:auto
+  
+  /* grid-template-columns: repeat(1, 1fr);
   grid-template-rows: repeat(12, 1fr);
   grid-column-gap: 2px;
-  grid-row-gap: 2px;
+  grid-row-gap: 2px;  */
 }
 .moves-list-player {
   overflow:auto
-  display: grid;
-  max-width: 20vw;
-  /* height: 100vh; */
-  grid-template-columns: repeat(2, 1fr);
+  /* display: grid; */
+  /* max-width: 20vw; */
+  height: 50vh;
+  /* grid-template-columns: repeat(2, 1fr);
   grid-template-rows: repeat(12, 1fr);
   grid-column-gap: 2px;
-  grid-row-gap: 2px;
+  grid-row-gap: 2px; */
 }
 
 .opponent-hit {
-  color: pink;
+  color: red;
 }
 
 .opponent-miss {
@@ -204,7 +207,51 @@ const Container = styled.div`
 .opponent-clear {
   display: none;
 }
-  
-`;
 
-export default App;
+
+
+
+.ship-grid {
+  z-index: -1;
+  position: relative;
+  top: -42.35vw;
+  padding-left: 30px ;
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  grid-template-rows: repeat(10, 1fr);
+  grid-column-gap: 2px;
+  grid-row-gap: 2px;
+
+  > .coord {
+    width: 4vw;
+    height: 4vw;
+  }
+  
+  #carrier {
+    background: blue;
+    grid-column-start: ${props => props.carrier.coords[0].y + 1 };
+    grid-column-end: ${props => props.carrier.coords[4].y + 2 };
+    grid-row-start: ${props => props.carrier.coords[0].x + 1 };
+    grid-row-end: ${props => props.carrier.coords[4].x + 2 };
+    width: auto;
+    height: auto;
+   
+  }
+  
+  .battleShip {
+    
+  }
+  .cruiser1 {
+    
+  }
+  .cruiser2 {
+    
+  }
+  .destroyer {
+    
+  }
+}
+  
+`);
+
+export default withPlayer(App);

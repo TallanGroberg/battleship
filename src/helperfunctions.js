@@ -355,6 +355,36 @@ export function winner(player, opponent) {
     }
 }
 
+export function alreadyChose(tries, coord) {
+    tries.forEach(element => {
+        if(element.x === coord.x && element.y === coord.y) {
+            return true
+        }
+    })
+    return false;
+}
+
+// requires a valid ship. 
+    // givin the information about a ship. gives the proper information to generate a string information to be placed on the grid correctly
+// function dinamicGrid(ship) {
+//     if(ship.direction === "horiz") {
+//         horizShip(ship)
+//     } else {
+//         vertShip(ship)
+//     }
+// }
+
+// function horizShip(ship) {
+//     const start = ship.coords[0]
+
+
+// }
+// function vertShip(ship) {
+
+// }
+
+
+
 // module.exports = {  
 //                 random, 
 //                 matrixAt,
@@ -368,5 +398,5 @@ export function winner(player, opponent) {
 //                 playerFactory,
 //                 makeBoard, 
 //                 printBoard,
-//                 };
+                // };
 

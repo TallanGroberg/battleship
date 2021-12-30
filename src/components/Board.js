@@ -1,16 +1,20 @@
 import {useState} from "react";
 import { makeBoard, matrixAt, random } from "../helperfunctions";
-import { Coordinate } from "./Coordinate";
-export const Board = ({board,
-    setBoard,
-    setOpponent,
-    oppBoard,
-    setOppBoard,
-    player, setPlayer,
-    oppDivs,
-    setOppdivs
-    
-            }) => {
+import  Coordinate  from "./Coordinate";
+import { withPlayer } from "../Providers/PlayerProvider";
+
+
+function Board ({
+                    board,
+                    setBoard,
+                    setOpponent,
+                    opponent,
+                    oppBoard,
+                    setOppBoard,
+                    player, setPlayer,
+                    oppDivs,
+                    setOppdivs
+                }) {
 
                 
 
@@ -23,6 +27,7 @@ export const Board = ({board,
                         board={board}
                         coordinate={i}
                         setOpponent={setOpponent}
+                        opponent={opponent}
                         oppBoard={oppBoard[i]}
                         square={square}
                         setPlayer={setPlayer}
@@ -37,4 +42,6 @@ export const Board = ({board,
      </div>
     )
 }
+
+export default withPlayer(Board)
 

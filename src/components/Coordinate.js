@@ -1,50 +1,63 @@
 import React, {useState} from "react";
-import { matrixAt, random } from "../helperfunctions";
+import { matrixAt, random, alreadyChose, playerFactory } from "../helperfunctions";
+import { withPlayer } from "../Providers/PlayerProvider";
 
-
-export const Coordinate  = ({
+function Coordinate ({
+                            player,
                             board,
                             coordinate,
                             setOpponent,
+                            opponent,
                             oppBoard,
                             square,
                             setPlayer,
                             oppDiv,
                             setOppdivs,
-                        }) => {
+                        }) {
     const divClassifier = ["ocean", "hit", "miss"]
     
     const [coord, setCoord] = useState({x: ((coordinate) - coordinate % 10) / 10, y: coordinate % 10})
     const [divName, setDivName] = useState(divClassifier[0])
+    const [hide, setHide] = useState("hide")
+        
+        const carrier = JSON.stringify(player.ships[0].coords[0]) === JSON.stringify(coord)
 
+        
+    
 
     function move() {
         
         
-            yourMove()
-            oppMove()
+        if(divName === 'ocean') yourMove()
+            
+        if(oppDiv === 'opponent-clear') oppMove()
         
     }
 
     function yourMove() {
-        if(divName === 'ocean') {
 
             setPlayer(prev => ({...prev, tries: [...prev.tries, coord]}))
             
             if(oppBoard !== ' ') {
                 hitShip(coord, setOpponent)
                 setDivName(divClassifier[1])
+                setHide(divClassifier[1])
             } else {
                 setDivName(divClassifier[2])
+                setHide(divClassifier[2])
             }
-        }
+        
     }
 
     function oppMove() {
-        if(oppDiv === 'opponent-clear') {
+        
+        var move = {x: random(0,9), y: random(0,9)}
 
-            
-            var move = {x: random(0,9), y: random(0,9)}
+            while(alreadyChose(opponent.tries, move)) {
+                debugger
+                move = {x: random(0,9), y: random(0,9)}
+            }
+        
             
             setOpponent(prev => ( {...prev, tries: [...prev.tries, move] } ) )
             
@@ -63,7 +76,7 @@ export const Coordinate  = ({
                     return prev
                 })
             }
-        }
+        
     }
 
     function hitShip(move, setPlay) {
@@ -89,16 +102,24 @@ export const Coordinate  = ({
         })
     }
 
-    return ( <div onClick={() => move()}
+    return ( 
+                <div onClick={() => move()}
+                    
                         key={coordinate} 
-                        className={divName}>
-                            {square}
+                        
+                        className={ square === ' ' ? divName : hide  }
+                         >
+                            {oppDiv === 'opponent-hit' ? null : square}
+
                             <div 
                                 className={oppDiv}
-                                
-                                >{oppDiv === 'opponent-hit' ? 'X' : 'o'}</div>
+                            >
+                                {oppDiv === 'opponent-hit' ? 'X' : 'o'}
+                            </div>
             </div> 
        
        
     )
 }
+
+export default Coordinate

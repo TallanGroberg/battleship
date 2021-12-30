@@ -14,6 +14,7 @@ const checkForShips = require("../helperfunctions").checkForShips;
 const playerFactory = require("../helperfunctions").playerFactory;
 const makeBoard = require("../helperfunctions").makeBoard;
 const printBoard = require("../helperfunctions").printBoard;
+// const dinamicGrid = require("../helperfunctions").dinamicGrid;
 
 
 
@@ -159,9 +160,11 @@ test('PlayerFactory should create a new player with everything they would need t
  printBoard(board)
 })
 
-test("prints board to console", () => {
+// test("generates the correct string for making a ship with correct divs", () => {
+//   const ship = { direction: "horiz", coords: [{x:0, y:0}, {x:0, y:1}] }
 
-})
+//   expect(dinamicGrid(ship)).toBe("1 / 1 / 2 / 3")
+// })
 
 
 
