@@ -336,7 +336,7 @@ export function shipIsThere(fleet, coord) {
 }
 
 // returns a string with the type of ship based on how many coordinates it has.
-  function whatType(ship) {
+  export function whatType(ship) {
     if(ship.type === 5) return "C"
     if(ship.type === 4) return "Ba"
     if(ship.type === 3) return "Cru"
@@ -347,12 +347,20 @@ export function winner(player, opponent) {
  
 
     if(player.shipsLeft === 0) {
-        return "opponent wins"
-    } 
-
-    if(opponent.shipsLeft === 0) {
+        setTimeout(function() {
+            
+            window.location.reload();
+           }, 5000);
+           return "opponent wins"
+        } 
+        
+        if(opponent.shipsLeft === 0) {
+        setTimeout(function() {
+            window.location.reload();
+           }, 5000);
         return "You win!"
     }
+
 }
 
 export function alreadyChose(tries, coord) {
@@ -364,24 +372,10 @@ export function alreadyChose(tries, coord) {
     return false;
 }
 
-// requires a valid ship. 
-    // givin the information about a ship. gives the proper information to generate a string information to be placed on the grid correctly
-// function dinamicGrid(ship) {
-//     if(ship.direction === "horiz") {
-//         horizShip(ship)
-//     } else {
-//         vertShip(ship)
-//     }
-// }
-
-// function horizShip(ship) {
-//     const start = ship.coords[0]
-
-
-// }
-// function vertShip(ship) {
-
-// }
+export function convertMove(move) {
+    var letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']
+    return  "( " + letters[move.x] + " ," + (move.y + 1) + " )"
+}
 
 
 

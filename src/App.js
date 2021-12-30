@@ -11,21 +11,27 @@ function App({
   player,
   opponent,
   carrier,
+  battleShip,
   board,
   oppBoard,
   oppDivs,
+  updates,
+  oppUpdates,
   setPlayer,
   setOpponent,
   setBoard,
   setOppBoard,
   setOppdivs,
+  setUpdates,
 }) {
  
- console.log("Carrier", carrier.coords)
+ console.log("battleShip", battleShip.coords)
 
   var col = 0;
   var row = ["A", "B","C","D","E","F"," G", "H", "I", "J"]
   var column = Array(10).fill().map( a => col += 1);
+
+
 
 
   
@@ -35,7 +41,9 @@ function App({
       <div className={"game"}>
 
         <h1>Battle Ship</h1>
-        <h1>{winner(player, opponent)}</h1>
+        <h1>{winner(player,opponent)}</h1>
+        <h4>{updates}</h4>
+        <h4>{oppUpdates}</h4>
 
 
 
@@ -113,6 +121,7 @@ const Container = withPlayer(styled.div`
         
         /* border: 1px solid #4e1f9d; */
         > .ocean {
+         
           background-color: #ADD8E6;
           text-align: center;
           width: 4vw;
@@ -130,11 +139,13 @@ const Container = withPlayer(styled.div`
       > .hit {
         background-color: grey;
         border-radius: 50%;
+        opacity: 75%;
       }
       
       > .miss {
          border-radius: 50%;
         background-color: lightblue;
+        opacity: 50%;
       }
 
 
@@ -144,7 +155,7 @@ const Container = withPlayer(styled.div`
     
   }
   .hide {
-  opacity: 100% !important;
+  opacity: 100%;
 }
 
 .player {
@@ -168,14 +179,14 @@ const Container = withPlayer(styled.div`
 }
 
 .moves-list {
-  overflow:auto
-  display: grid;
-  max-width: 20vw;
-  /* height: 100vh; */
+  /* height:50vh;
+  overflow-y:auto */
+  /* display: grid; */
+  /* overflow-y:auto
   grid-template-columns: repeat(2, 1fr);
   grid-template-rows: repeat(12, 1fr);
   grid-column-gap: 2px;
-  grid-row-gap: 2px;
+  grid-row-gap: 2px; */
 }
 .moves-list-opponent {
   height:50vh;
@@ -187,10 +198,10 @@ const Container = withPlayer(styled.div`
   grid-row-gap: 2px;  */
 }
 .moves-list-player {
-  overflow:auto
+  height: 50vh;
+  overflow-y:auto
   /* display: grid; */
   /* max-width: 20vw; */
-  height: 50vh;
   /* grid-template-columns: repeat(2, 1fr);
   grid-template-rows: repeat(12, 1fr);
   grid-column-gap: 2px;
@@ -199,6 +210,8 @@ const Container = withPlayer(styled.div`
 
 .opponent-hit {
   color: red;
+  text-align: center;
+  vertical-align: middle;
 }
 
 .opponent-miss {
@@ -235,20 +248,50 @@ const Container = withPlayer(styled.div`
     grid-row-end: ${props => props.carrier.coords[4].x + 2 };
     width: auto;
     height: auto;
+    border-radius: 50%;
+    
    
   }
   
-  .battleShip {
-    
+  #battleShip {
+    background: blue;
+    grid-column-start: ${props => props.battleShip.coords[0].y + 1 };
+    grid-column-end: ${props => props.battleShip.coords[3].y + 2 };
+    grid-row-start: ${props => props.battleShip.coords[0].x + 1 };
+    grid-row-end: ${props => props.battleShip.coords[3].x + 2 };
+    width: auto;
+    height: auto;
+    border-radius: 50%;
   }
-  .cruiser1 {
-    
+  #cruiser1 {
+    background: blue;
+    grid-column-start: ${props => props.cruiser1.coords[0].y + 1 };
+    grid-column-end: ${props => props.cruiser1.coords[2].y + 2 };
+    grid-row-start: ${props => props.cruiser1.coords[0].x + 1 };
+    grid-row-end: ${props => props.cruiser1.coords[2].x + 2 };
+    width: auto;
+    height: auto;
+    border-radius: 50%;
   }
-  .cruiser2 {
-    
+  #cruiser2 {
+    background: blue;
+    grid-column-start: ${props => props.cruiser2.coords[0].y + 1 };
+    grid-column-end: ${props => props.cruiser2.coords[2].y + 2 };
+    grid-row-start: ${props => props.cruiser2.coords[0].x + 1 };
+    grid-row-end: ${props => props.cruiser2.coords[2].x + 2 };
+    width: auto;
+    height: auto;
+    border-radius: 50%;
   }
-  .destroyer {
-    
+  #destroyer {
+    background: blue;
+    grid-column-start: ${props => props.destroyer.coords[0].y + 1 };
+    grid-column-end: ${props => props.destroyer.coords[1].y + 2 };
+    grid-row-start: ${props => props.destroyer.coords[0].x + 1 };
+    grid-row-end: ${props => props.destroyer.coords[1].x + 2 };
+    width: auto;
+    height: auto;
+    border-radius: 50%;
   }
 }
   

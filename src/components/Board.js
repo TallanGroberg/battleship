@@ -13,7 +13,9 @@ function Board ({
                     setOppBoard,
                     player, setPlayer,
                     oppDivs,
-                    setOppdivs
+                    setOppdivs,
+                    setUpdates,
+                    setOppUpdates
                 }) {
 
                 
@@ -34,6 +36,8 @@ function Board ({
                         player={player}
                         oppDiv={oppDivs[i]}
                         setOppdivs={setOppdivs}
+                        setUpdates={setUpdates}
+                        setOppUpdates={setOppUpdates}
                     
                     />
        })}

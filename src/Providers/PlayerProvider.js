@@ -26,6 +26,8 @@ const {Provider, Consumer} = React.createContext();
 
     const [oppDivs, setOppdivs] = useState(divs);
 
+    const [updates, setUpdates] = useState("click any square to begin")
+    const [oppUpdates, setOppUpdates] = useState("")
 
 
 
@@ -37,6 +39,9 @@ const {Provider, Consumer} = React.createContext();
             board,
             oppBoard,
             oppDivs,
+            updates,
+            oppUpdates,
+
 
             carrier,
             battleShip,
@@ -50,6 +55,8 @@ const {Provider, Consumer} = React.createContext();
             setBoard,
             setOppBoard,
             setOppdivs,
+            setUpdates,
+             setOppUpdates
         }}>
             {props.children}
         </Provider>

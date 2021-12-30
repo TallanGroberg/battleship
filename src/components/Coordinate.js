@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import { matrixAt, random, alreadyChose, playerFactory } from "../helperfunctions";
+import { matrixAt, random, alreadyChose, playerFactory, convertMove, whatType } from "../helperfunctions";
 import { withPlayer } from "../Providers/PlayerProvider";
 
 function Coordinate ({
@@ -13,6 +13,8 @@ function Coordinate ({
                             setPlayer,
                             oppDiv,
                             setOppdivs,
+                            setUpdates,
+                            setOppUpdates
                         }) {
     const divClassifier = ["ocean", "hit", "miss"]
     
@@ -37,14 +39,16 @@ function Coordinate ({
     function yourMove() {
 
             setPlayer(prev => ({...prev, tries: [...prev.tries, coord]}))
-            
+            console.log(coord)
             if(oppBoard !== ' ') {
-                hitShip(coord, setOpponent)
+                hitShip(coord, setOpponent, setUpdates)
                 setDivName(divClassifier[1])
                 setHide(divClassifier[1])
+                setUpdates("You hit at " + convertMove(coord) +" \n" )
             } else {
                 setDivName(divClassifier[2])
                 setHide(divClassifier[2])
+                setUpdates( "you missed at " + convertMove(coord) )
             }
         
     }
@@ -67,19 +71,20 @@ function Coordinate ({
                     prev[matrixAt(move.x,move.y)] = "opponent-hit"
                     return prev
                 })
-                hitShip(move, setPlayer)
-                
+                hitShip(move, setPlayer, setOppUpdates)
+                setOppUpdates("opponent hits at: " + convertMove(move))
             } 
             else {
                 setOppdivs(prev => {
                     prev[matrixAt(move.x,move.y)] = "opponent-miss"
                     return prev
                 })
+                setOppUpdates("\nopponent misses at: " + convertMove(move))
             }
         
     }
 
-    function hitShip(move, setPlay) {
+    function hitShip(move, setPlay, setUpdate) {
        
         setPlay(prev => {
             prev.ships.map(ship => {
@@ -91,6 +96,7 @@ function Coordinate ({
                     null
                 )
                 if(ship.hits === ship.type && ship.type !== "sunk") {
+                    setUpdate(prevUpdate => prevUpdate + " and sunk a ship")
                     ship.hits = "sunk"
                     ship.type = "sunk"
                     prev.shipsLeft--;
@@ -104,19 +110,17 @@ function Coordinate ({
 
     return ( 
                 <div onClick={() => move()}
-                    
                         key={coordinate} 
-                        
                         className={ square === ' ' ? divName : hide  }
                          >
-                            {oppDiv === 'opponent-hit' ? null : square}
+                            
 
                             <div 
                                 className={oppDiv}
                             >
-                                {oppDiv === 'opponent-hit' ? 'X' : 'o'}
+                                {oppDiv === 'opponent-hit' ? 'X' : 'x'}
                             </div>
-            </div> 
+                </div> 
        
        
     )
